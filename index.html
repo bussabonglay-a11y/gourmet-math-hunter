@@ -57,6 +57,11 @@ ol.steps{margin:6px 0;padding-left:22px}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 .bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--gold)}
+canvas{width:100%;max-width:420px;display:block;margin:8px auto;background:var(--soft);border:2px solid var(--line);border-radius:16px;touch-action:none;cursor:ew-resize}
+.boss{display:flex;gap:10px;align-items:center;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:6px 12px;margin:8px 0}
+.bi{font-size:40px;display:inline-block;line-height:1.2}
+.bi.hit{animation:shake .5s}
+@keyframes shake{25%{transform:translateX(-8px) rotate(-8deg)}75%{transform:translateX(8px) rotate(8deg)}}
 </style>
 </head>
 <body>
@@ -106,23 +111,24 @@ P:[{q:"ไข่ไก่ 6 ฟอง ฟองละ x บาท กับน�
 ];
 const PR=["ยอดเยี่ยม!","เก่งมาก!","สุดยอดนักล่า!","ถูกต้องเป๊ะ!"];
 const $=s=>document.querySelector(s),A=$("#app");
-let S={v:"home",lv:0,pi:0,h:0,w:0,sc:0,cb:0,best:0,got:0,un:0,st:[],ok:false,idle:null};
+let S={v:"home",lv:0,pi:0,h:0,w:0,sc:0,cb:0,best:0,got:0,un:0,st:[],ok:false,idle:null,am:0,hp:3,bh:100,hd:0};
 try{const d=JSON.parse(localStorage.getItem("gmh")||"null");if(d){S.un=d.un||0;S.st=d.st||[];S.sc=d.sc||0}}catch(e){}
 const save=()=>{try{localStorage.setItem("gmh",JSON.stringify({un:S.un,st:S.st,sc:S.sc}))}catch(e){}};
 const cur=()=>L[S.lv].P[S.pi];
 const hdr=()=>`<div class="top"><span class="pill">⭐ ${S.sc} คะแนน</span><span class="pill">🔥 Combo ${S.cb}</span><button class="btn alt" onclick="go('home')">แผนที่ภารกิจ</button></div>`;
-function go(v,lv){clearTimeout(S.idle);S.v=v;if(lv!==undefined){S.lv=lv;S.pi=0;S.got=0;S.cb=0}render()}
+function go(v,lv){clearTimeout(S.idle);S.stop&&S.stop();S.hd=0;S.v=v;if(lv!==undefined){S.lv=lv;S.pi=0;S.got=0;S.cb=0;S.bh=100;S.hp=3}render()}
 function sides(p){const e=(S.ok||!p.hide)?p.eq:"? = ?";return e.split(" = ")}
 function scale(p){const[l,r]=sides(p),t=S.ok?0:(S.pi%2?-7:7),dy=Math.round(Math.sin(t*Math.PI/180)*110);
 const pan=(id,x,tx,y)=>`<g class="pan" id="${id}" style="transform:translateY(${y}px)"><line x1="${x}" y1="50" x2="${x-42}" y2="104" stroke="currentColor"/><line x1="${x}" y1="50" x2="${x+42}" y2="104" stroke="currentColor"/><rect x="${x-50}" y="104" width="100" height="40" rx="12" fill="var(--gold)"/><text x="${x}" y="130" text-anchor="middle" font-size="17" font-weight="700" fill="#1B2B22" id="${id}t">${tx}</text></g>`;
 return `<svg viewBox="0 0 320 190" role="img" aria-label="ตาชั่งสมการ"><rect x="152" y="50" width="16" height="120" rx="6" fill="var(--leaf)"/><rect x="110" y="168" width="100" height="14" rx="7" fill="var(--leaf)"/><g class="beam" id="beam" style="transform-origin:160px 50px;transform:rotate(${t}deg)"><rect x="50" y="46" width="220" height="8" rx="4" fill="var(--chili)"/></g>${pan("pl",55,l,-dy)}${pan("pr",265,r,dy)}<circle cx="160" cy="50" r="9" fill="var(--chili)"/></svg>`}
-function render(){const f={home,lesson,play,done}[S.v];A.innerHTML=hdr()+f();if(S.v==="play")arm()}
+function render(){const f={home,lesson,play,done}[S.v];A.innerHTML=hdr()+f();if(S.v==="play")S.hd?arm():startHunt()}
 function home(){return `<div class="hero"><h1>🍜 Gourmet Math Hunter</h1><p>นักล่าคณิตพิชิตโลกอาหาร: ผจญภัยในตลาด แก้สมการเชิงเส้นตัวแปรเดียว โดยมีตาชั่งและโค้ชคอยช่วย</p></div><div class="grid">${L.map((l,i)=>`<button class="lv" ${i>S.un?"disabled":""} onclick="go('lesson',${i})"><span class="ic">${i>S.un?"🔒":l.i}</span><b>ด่าน ${i+1}</b><span>${l.n}</span><span>${"⭐".repeat(S.st[i]||0)||"&nbsp;"}</span></button>`).join("")}</div>`}
 function coach(h){return `<div class="coach"><div class="av" aria-hidden="true">🧑‍🍳</div><div class="bub">${h}</div></div>`}
 function lesson(){const l=L[S.lv];return `<h2 class="disp">ด่าน ${S.lv+1}: ${l.n}</h2>${coach("<b>Coach:</b> "+l.t)}${coach("เรามีโจทย์ "+l.P.length+" ข้อ ลองทำด้วยตัวเองก่อนนะ ติดตรงไหนกดขอคำใบ้ได้ถึง 3 ระดับ ไม่ต้องรีบ!")}<div class="row"><button class="btn" onclick="go('play')">เริ่มภารกิจ</button></div>`}
-function play(){const l=L[S.lv],p=cur();S.ok=false;S.h=0;S.w=0;
+function play(){return S.hd?quiz():hunt()}
+function quiz(){const l=L[S.lv],p=cur();S.ok=false;S.h=0;S.w=0;
 const inp=p.o?`<div class="opts" id="opts">${p.o.map((o,i)=>`<button class="opt" onclick="check(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("")}</div>`:`<div class="row"><label for="ans">ตอบ x =</label><input type="text" id="ans" inputmode="decimal" autocomplete="off"><button class="btn" onclick="check($('#ans').value)">ตรวจคำตอบ</button></div>`;
-return `<div class="bar" aria-hidden="true"><i style="width:${S.pi/l.P.length*100}%"></i></div><p>ด่าน ${S.lv+1} · ข้อ ${S.pi+1}/${l.P.length}</p><div class="play"><div class="panel">${scale(p)}${p.hide?"":`<div class="eq" id="eq">${p.eq}</div>`}${p.hide?`<div class="eq" id="eq">ตาชั่งยังไม่สมดุล: เขียนสมการให้ถูก</div>`:""}</div><div class="panel"><div class="q">${p.q}</div>${inp}<div class="row"><button class="btn alt" id="hb" onclick="hint()">💡 คำใบ้ (0/3)</button><button class="btn alt" id="rb" onclick="reveal()">ดูเฉลย</button></div><div id="fb" aria-live="polite"></div></div></div>`}
+return `<div class="bar" aria-hidden="true"><i style="width:${S.pi/l.P.length*100}%"></i></div><p>ด่าน ${S.lv+1} · ข้อ ${S.pi+1}/${l.P.length}</p>${bossbar()}<div class="play"><div class="panel">${scale(p)}${p.hide?"":`<div class="eq" id="eq">${p.eq}</div>`}${p.hide?`<div class="eq" id="eq">ตาชั่งยังไม่สมดุล: เขียนสมการให้ถูก</div>`:""}</div><div class="panel"><div class="q">${p.q}</div>${inp}<div class="row"><button class="btn alt" id="hb" onclick="hint()">💡 คำใบ้ (0/3)</button><button class="btn alt" id="rb" onclick="reveal()">ดูเฉลย</button></div><div id="fb" aria-live="polite"></div></div></div>`}
 function arm(){clearTimeout(S.idle);S.idle=setTimeout(()=>{if(!S.ok)fb('<div class="hint">ใช้เวลาคิดได้เลยนะ ถ้าอยากได้ตัวช่วย กด 💡 คำใบ้ ได้ ไม่เสียกำลังใจแน่นอน</div>',1)},45000);const a=$("#ans");if(a){a.addEventListener("keydown",e=>{if(e.key==="Enter")check(a.value)})}}
 function fb(h,keep){const e=$("#fb");if(!e)return;e.innerHTML=keep?e.innerHTML+h:h}
 const hints=[];
@@ -138,16 +144,36 @@ document.querySelectorAll(".opt").forEach(b=>b.disabled=true);const a=$("#ans");
 function nextBtn(){const l=L[S.lv];return `<div class="row"><button class="btn" onclick="next()">${S.pi+1<l.P.length?"ข้อต่อไป":"จบด่าน"}</button></div>`}
 function check(v){if(S.ok)return;const p=cur();let ok;
 if(p.o)ok=v===p.a;else{const m=String(v).replace(/,/g,"").match(/-?\d+(\.\d+)?/g);if(!m){fb('<div class="warn">ยังไม่มีตัวเลขนะ พิมพ์ค่าของ x เช่น 12 แล้วกดตรวจคำตอบอีกครั้ง</div>');return}ok=parseFloat(m[m.length-1])===p.a}
-if(ok){const pts=Math.max(30,100-25*S.h);S.cb++;S.best=Math.max(S.best,S.cb);const bonus=S.cb>=2?(S.cb-1)*20:0;S.sc+=pts+bonus;S.got++;
+if(ok){const pts=Math.max(30,100-25*S.h);S.cb++;S.best=Math.max(S.best,S.cb);const bonus=S.cb>=2?(S.cb-1)*20:0;S.sc+=pts+bonus+S.am*10;S.got++;hitBoss();
 if(p.o){document.querySelectorAll(".opt")[v].classList.add("ok")}
 finish();$(".pill").textContent="⭐ "+S.sc+" คะแนน";document.querySelectorAll(".pill")[1].textContent="🔥 Combo "+S.cb;
-fb(`<div class="good"><b>${PR[Math.floor(Math.random()*PR.length)]}</b> +${pts} คะแนน${S.h?` (ใช้คำใบ้ ${S.h} ครั้ง)`:" (ไม่ใช้คำใบ้)"} ${bonus?`<span class="combo">Combo x${S.cb}! โบนัส +${bonus}</span>`:""}<br>ถูกเพราะเมื่อทำตามเหตุผลด้านล่าง ตาชั่งจึงสมดุลพอดี:${steps(p)}</div>`+nextBtn())}
-else{S.w++;S.cb=0;document.querySelectorAll(".pill")[1].textContent="🔥 Combo 0";if(p.o){const b=document.querySelectorAll(".opt")[v];b.classList.add("no");b.disabled=true}
-fb(`<div class="warn"><b>ยังไม่ใช่ ไม่เป็นไรนะ!</b> ทุกคนพลาดได้ ลองใหม่อีกครั้ง<br>${L[S.lv].rv}${S.w>=2&&S.h<3?"<br>ลองกด 💡 คำใบ้ ดูได้เลย":""}</div>`);arm()}}
+fb(`<div class="good"><b>${PR[Math.floor(Math.random()*PR.length)]}</b> +${pts} คะแนน${S.am?` +${S.am*10} (วัตถุดิบ)`:""}${S.h?` (ใช้คำใบ้ ${S.h} ครั้ง)`:" (ไม่ใช้คำใบ้)"} ${bonus?`<span class="combo">Combo x${S.cb}! โบนัส +${bonus}</span>`:""}<br>ถูกเพราะเมื่อทำตามเหตุผลด้านล่าง ตาชั่งจึงสมดุลพอดี:${steps(p)}</div>`+nextBtn())}
+else{S.w++;S.cb=0;hitMe();document.querySelectorAll(".pill")[1].textContent="🔥 Combo 0";if(p.o){const b=document.querySelectorAll(".opt")[v];b.classList.add("no");b.disabled=true}
+fb(`<div class="warn"><b>ยังไม่ใช่ ไม่เป็นไรนะ!</b> ทุกคนพลาดได้ ลองใหม่อีกครั้ง${S.rev?" Coach ชุบหัวใจให้ครบแล้ว สู้ต่อ!":" บอสโจมตีไป 1 หัวใจ"}<br>${L[S.lv].rv}${S.w>=2&&S.h<3?"<br>ลองกด 💡 คำใบ้ ดูได้เลย":""}</div>`);arm()}}
 function reveal(){if(S.ok)return;const p=cur();S.cb=0;S.got=Math.max(0,S.got);finish();document.querySelectorAll(".pill")[1].textContent="🔥 Combo 0";
 fb(`<div class="hint"><b>เฉลยละเอียด</b> (ข้อนี้ไม่ได้คะแนน ลองทำข้อต่อไปให้เต็มที่นะ)${steps(p)}</div>`+nextBtn())}
-function next(){const l=L[S.lv];if(S.pi+1<l.P.length){S.pi++;render()}else{S.st[S.lv]=Math.max(S.st[S.lv]||0,S.got);S.un=Math.max(S.un,Math.min(S.lv+1,L.length-1));save();go("done")}}
-function done(){const l=L[S.lv],last=S.lv===L.length-1;return `<div class="hero"><h2 class="disp">ผ่านด่าน ${S.lv+1} แล้ว! 🎉</h2><p>${l.n}</p></div>${coach(`<b>ทักษะที่เธอทำได้:</b> ${l.sk}<br>ตอบถูกด้วยตัวเอง ${S.got}/${l.P.length} ข้อ ${"⭐".repeat(S.got)}<br>คอมโบสูงสุดรอบนี้: ${S.best}`)}${coach(last?"เธอจบครบทุกด่านแล้ว! ตอนนี้แก้สมการเชิงเส้นตัวแปรเดียวและตรวจคำตอบได้เอง ปลดล็อกภารกิจพิเศษ: <b>ตำนานนักล่าคณิต</b> 🏅":`ปลดล็อกภารกิจใหม่แล้ว: <b>ด่าน ${S.lv+2} ${L[S.lv+1].i} ${L[S.lv+1].n}</b>`)}<div class="row">${last?"":`<button class="btn" onclick="go('lesson',${S.lv+1})">ไปด่านต่อไป</button>`}<button class="btn alt" onclick="go('lesson',${S.lv})">เล่นด่านนี้ซ้ำ</button><button class="btn alt" onclick="go('home')">แผนที่ภารกิจ</button></div>`}
+function next(){const l=L[S.lv];if(S.pi+1<l.P.length){S.pi++;S.hd=0;render()}else{S.st[S.lv]=Math.max(S.st[S.lv]||0,S.got);S.un=Math.max(S.un,Math.min(S.lv+1,L.length-1));save();go("done")}}
+function done(){const l=L[S.lv],last=S.lv===L.length-1;return `<div class="hero"><h2 class="disp">ผ่านด่าน ${S.lv+1} แล้ว! 🎉</h2><p>${l.n} · ปราบบอส ${BO[S.lv]} สำเร็จ!</p></div>${coach(`<b>ทักษะที่เธอทำได้:</b> ${l.sk}<br>ตอบถูกด้วยตัวเอง ${S.got}/${l.P.length} ข้อ ${"⭐".repeat(S.got)}<br>คอมโบสูงสุดรอบนี้: ${S.best}`)}${coach(last?"เธอจบครบทุกด่านแล้ว! ตอนนี้แก้สมการเชิงเส้นตัวแปรเดียวและตรวจคำตอบได้เอง ปลดล็อกภารกิจพิเศษ: <b>ตำนานนักล่าคณิต</b> 🏅":`ปลดล็อกภารกิจใหม่แล้ว: <b>ด่าน ${S.lv+2} ${L[S.lv+1].i} ${L[S.lv+1].n}</b>`)}<div class="row">${last?"":`<button class="btn" onclick="go('lesson',${S.lv+1})">ไปด่านต่อไป</button>`}<button class="btn alt" onclick="go('lesson',${S.lv})">เล่นด่านนี้ซ้ำ</button><button class="btn alt" onclick="go('home')">แผนที่ภารกิจ</button></div>`}
+const BO=["🐉","👹","🦖","🦑","🐙","🦂","🐲","👾"];
+function bossbar(){return `<div class="boss"><span class="bi" id="bi">${BO[S.lv]}</span><div style="flex:1"><div class="bar"><i id="bhp" style="width:${S.bh}%;background:var(--chili)"></i></div><small>HP บอส ${Math.round(S.bh)}% · พลังโจมตี 🍅 x${S.am}</small></div><span id="hr" aria-label="หัวใจ">${"❤️".repeat(S.hp)}${"🖤".repeat(3-S.hp)}</span></div>`}
+function hitBoss(){S.bh=Math.max(0,S.bh-100/L[S.lv].P.length);const b=$("#bhp"),e=$("#bi");if(b)b.style.width=S.bh+"%";if(e){e.classList.remove("hit");void e.offsetWidth;e.classList.add("hit")}}
+function hitMe(){S.rev=0;S.hp--;if(S.hp<=0){S.hp=3;S.rev=1}const h=$("#hr");if(h)h.textContent="❤️".repeat(S.hp)+"🖤".repeat(3-S.hp)}
+function hunt(){S.am=0;return `<p>ด่าน ${S.lv+1} · ข้อ ${S.pi+1}/${L[S.lv].P.length}</p>${bossbar()}${coach("<b>Coach:</b> บอสขวางทางอยู่! ลากนิ้วหรือเมาส์ (หรือกดปุ่มลูกศร) เพื่อเลื่อนเชฟไปรับวัตถุดิบ 🍅🥕🍤 ที่ร่วงลงมา หลบก้อนหิน 🪨 ด้วยนะ วัตถุดิบที่เก็บได้จะกลายเป็นพลังโจมตีตอนตอบคำถาม")}<canvas id="cv" width="360" height="260" role="img" aria-label="มินิเกมเก็บวัตถุดิบ"></canvas><div class="row" style="justify-content:center"><span class="pill" id="hs">เก็บได้ 0</span><span class="pill" id="ht">เหลือ 10 วิ</span><button class="btn alt" onclick="endHunt()">ข้ามมินิเกม</button></div>`}
+function endHunt(){S.stop&&S.stop();S.hd=1;render()}
+function startHunt(){const c=$("#cv");if(!c)return;const x=c.getContext("2d"),W=360,H=260,F=["🍅","🥕","🍤","🌶️","🍋"];
+let px=W/2,it=[],t=10,sp=0,run=true,last=performance.now();
+const mv=e=>{const r=c.getBoundingClientRect();px=Math.max(20,Math.min(W-20,(e.clientX-r.left)/r.width*W))};
+const kd=e=>{if(e.key==="ArrowLeft")px=Math.max(20,px-26);if(e.key==="ArrowRight")px=Math.min(W-20,px+26)};
+c.addEventListener("pointermove",mv);c.addEventListener("pointerdown",mv);document.addEventListener("keydown",kd);
+S.stop=()=>{run=false;document.removeEventListener("keydown",kd);S.stop=null};
+function f(n){if(!run)return;const d=Math.min(.05,(n-last)/1000);last=n;t-=d;sp-=d;
+if(sp<=0){sp=.4;const b=Math.random()<.25;it.push({x:20+Math.random()*(W-40),y:-20,b,e:b?"🪨":F[Math.random()*F.length|0]})}
+x.clearRect(0,0,W,H);x.textAlign="center";x.font="28px serif";
+for(const o of it){o.y+=(120+(10-t)*10)*d;x.fillText(o.e,o.x,o.y);if(!o.d&&o.y>H-48&&o.y<H-8&&Math.abs(o.x-px)<32){o.d=1;if(o.b)S.am=Math.max(0,S.am-1);else S.am++}}
+it=it.filter(o=>o.y<H+20&&!o.d);x.font="38px serif";x.fillText("🧑‍🍳",px,H-6);
+$("#hs").textContent="เก็บได้ "+S.am;$("#ht").textContent="เหลือ "+Math.max(0,Math.ceil(t))+" วิ";
+if(t<=0){endHunt();return}requestAnimationFrame(f)}
+requestAnimationFrame(f)}
 render();
 </script>
 </body>
