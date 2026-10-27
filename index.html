@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Gourmet Math Hunter: นักล่าคณิตพิชิตโลกอาหาร</title>
+<link href="https://fonts.googleapis.com/css2?family=Mali:wght@500;700&family=Noto+Sans+Thai+Looped:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EAF3E6;--card:#FFFFFF;--ink:#1B2B22;--mute:#5B6B60;--chili:#D6352B;--gold:#F2AE1C;--leaf:#2F7048;--line:#CFE0CB;--soft:#F6FAF3;--bad:#B4442C;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#14201A;--card:#1E2D25;--ink:#EAF3E6;--mute:#9DB1A3;--chili:#FF6B5E;--gold:#F7C24A;--leaf:#6FCB91;--line:#2F4538;--soft:#18261F;--bad:#FF9A85}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#14201A;--card:#1E2D25;--ink:#EAF3E6;--mute:#9DB1A3;--chili:#FF6B5E;--gold:#F7C24A;--leaf:#6FCB91;--line:#2F4538;--soft:#18261F;--bad:#FF9A85}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.7 "Noto Sans Thai Looped","Sarabun","Tahoma",sans-serif}
+h1,h2,h3,.disp{font-family:"Mali","Noto Sans Thai Looped","Tahoma",sans-serif;line-height:1.35;margin:0}
+main{max-width:920px;margin:0 auto;padding:16px}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.pill{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:2px 14px;font-weight:600}
+.btn{background:var(--chili);color:#fff;border:0;border-radius:14px;padding:10px 20px;font-weight:600;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line);box-shadow:none}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.hero{background:var(--leaf);color:#fff;border-radius:22px;padding:22px;margin-bottom:16px}
+.hero h1{font-size:clamp(26px,5vw,40px)}
+.hero p{margin:6px 0 0;max-width:60ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.lv{background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px;text-align:left;display:flex;flex-direction:column;gap:2px}
+.lv:disabled{opacity:.5;cursor:not-allowed}
+.lv .ic{font-size:32px}
+.lv b{font-family:"Mali",sans-serif}
+.coach{display:flex;gap:12px;align-items:flex-start;margin:12px 0}
+.av{font-size:40px;background:var(--gold);border-radius:50%;width:56px;height:56px;display:grid;place-items:center;flex:none}
+.bub{background:var(--card);border:2px solid var(--line);border-radius:4px 18px 18px 18px;padding:12px 16px;flex:1}
+.play{display:grid;grid-template-columns:minmax(0,1fr);gap:14px}
+@media(min-width:760px){.play{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr)}}
+.panel{background:var(--card);border:2px solid var(--line);border-radius:20px;padding:16px}
+svg{width:100%;height:auto;display:block}
+.beam,.pan{transition:transform .9s cubic-bezier(.3,1.5,.5,1)}
+.q{font-size:19px;font-weight:600}
+.eq{font-family:"Mali",sans-serif;font-size:28px;text-align:center;background:var(--soft);border-radius:14px;padding:6px;margin:10px 0}
+.opts{display:grid;gap:8px;margin:10px 0}
+.opt{text-align:left;background:var(--soft);border:2px solid var(--line);border-radius:12px;padding:10px 14px;font-size:18px}
+.opt:hover:not(:disabled){border-color:var(--gold)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--leaf);background:color-mix(in srgb,var(--leaf) 20%,var(--card))}
+.opt.no{border-color:var(--bad)}
+input[type=text]{font:inherit;font-size:20px;width:130px;padding:8px 12px;border-radius:12px;border:2px solid var(--line);background:var(--soft);color:var(--ink)}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.hint{border-left:6px solid var(--gold);background:var(--soft);padding:8px 12px;border-radius:0 12px 12px 0;margin:8px 0}
+.good{border-left:6px solid var(--leaf);background:color-mix(in srgb,var(--leaf) 14%,var(--card));padding:8px 12px;border-radius:0 12px 12px 0;margin:8px 0}
+.warn{border-left:6px solid var(--bad);background:var(--soft);padding:8px 12px;border-radius:0 12px 12px 0;margin:8px 0}
+ol.steps{margin:6px 0;padding-left:22px}
+.combo{display:inline-block;background:var(--gold);color:#1B2B22;border-radius:999px;padding:0 12px;font-weight:700;animation:pop .5s}
+@keyframes pop{0%{transform:scale(.6)}70%{transform:scale(1.15)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.bar{height:10px;background:var(--line);border-radius:9px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--gold)}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const L=[
+{n:"ร้านขนมปัง: สมการคืออะไร",i:"🥖",sk:"บอกได้ว่าอะไรคือสมการและตัวแปร",
+t:"สมการ คือประโยคคณิตศาสตร์ที่มีเครื่องหมาย = บอกว่าสองข้างเท่ากัน เหมือนตาชั่งที่สมดุล ส่วนตัวแปร คืออักษรที่แทนจำนวนที่ยังไม่รู้ เช่น 3x = 45 แปลว่า ขนม 3 ชิ้น ชิ้นละ x บาท รวม 45 บาท",
+rv:"ทบทวน: สมการต้องมี = และมีตัวแปร",h1:"สมการคือประโยคที่มีเครื่องหมาย = ลองมองหาเครื่องหมายนี้ก่อน",h2:"ตรวจว่าตัวเลือกไหนมี = และมีตัวอักษรแทนจำนวนที่ยังไม่รู้ด้วย",
+P:[{q:"ข้อใดเป็นสมการ?",eq:"2x + 5 = 11",o:["x + 3","2x + 5 = 11","7 − 2","4x > 8"],a:1,h3:"x + 3 กับ 7 − 2 ไม่มี = ส่วน 4x > 8 ใช้ > ไม่ใช่ = เหลือข้อไหนที่มีทั้ง = และตัวแปร?",s:["สมการต้องมีเครื่องหมาย = (สองข้างเท่ากัน)","และต้องมีตัวแปรแทนจำนวนที่ยังไม่รู้","2x + 5 = 11 มีครบทั้งสองอย่าง จึงเป็นสมการ ✅"]},
+{q:"ในสมการ 5y + 8 = 28 ตัวแปรคือข้อใด?",eq:"5y + 8 = 28",o:["5","8","y","28"],a:2,h3:"5, 8 และ 28 เป็นตัวเลข ตัวแปรคือ 'อักษร' ที่แทนจำนวนที่ยังไม่รู้ ในสมการนี้มีอักษรตัวไหน?",s:["ตัวแปรคืออักษรที่แทนจำนวนที่ยังไม่รู้","ใน 5y + 8 = 28 อักษรที่เห็นคือ y","ดังนั้นตัวแปรคือ y ✅"]}]},
+{n:"แผงผลไม้: ตรวจคำตอบ",i:"🍊",sk:"ตรวจได้ว่าค่าที่ได้เป็นคำตอบของสมการหรือไม่",
+t:"คำตอบของสมการ คือค่าที่แทนตัวแปรแล้วทำให้ซ้ายเท่ากับขวา เช่น x + 2 = 5 ลองแทน x = 3 จะได้ 3 + 2 = 5 ตาชั่งสมดุล แปลว่า 3 คือคำตอบ",
+rv:"ทบทวน: แทนค่าแล้วต้องได้ซ้าย = ขวา",h1:"ลองแทนค่า x ที่โจทย์ให้ลงในสมการดู",h2:"คำนวณฝั่งซ้ายให้ได้ผลลัพธ์ แล้วเทียบกับฝั่งขวา",
+P:[{q:"x = 4 เป็นคำตอบของสมการ 3x + 2 = 14 หรือไม่?",eq:"3x + 2 = 14",o:["ใช่","ไม่ใช่"],a:0,h3:"แทน x = 4 ได้ 3 × 4 + 2 = ? แล้วดูว่าเท่ากับ 14 หรือไม่",s:["แทน x = 4 ลงใน 3x + 2","3 × 4 + 2 = 12 + 2 = 14","ซ้ายเท่ากับขวา (14 = 14) ตาชั่งสมดุล จึงใช่ ✅"]},
+{q:"ค่าใดเป็นคำตอบของสมการ x + 9 = 15?",eq:"x + 9 = 15",o:["x = 5","x = 6","x = 7","x = 24"],a:1,h3:"ลองแทนทีละตัว เช่น x = 5 ได้ 5 + 9 = 14 ซึ่งไม่ใช่ 15 แล้วตัวถัดไปล่ะ?",s:["แทน x = 6 ได้ 6 + 9 = 15 ✅","x = 5 ได้ 14, x = 7 ได้ 16, x = 24 ได้ 33 ไม่ตรง","ดังนั้นคำตอบคือ x = 6"]}]},
+{n:"ตาชั่งเชฟ: สมบัติการเท่ากัน",i:"⚖️",sk:"อธิบายได้ว่าทำสิ่งเดียวกันกับสองข้างแล้วยังเท่ากัน",
+t:"สมบัติการเท่ากัน: ถ้าตาชั่งสมดุลอยู่ แล้วเราเพิ่ม เอาออก คูณ หรือหารด้วยจำนวนเดียวกันทั้งสองข้าง ตาชั่งจะยังสมดุล (ห้ามหารด้วย 0 นะ)",
+rv:"ทบทวน: ทำสิ่งเดียวกันกับทั้งสองข้างของสมการ",h1:"ตาชั่งสมดุลอยู่ ถ้าเพิ่มของเท่ากันทั้งสองข้างจะเป็นอย่างไร",h2:"ดำเนินการกับทั้งสองข้างด้วยจำนวนเดียวกัน แล้วเขียนผลลัพธ์ใหม่",
+P:[{q:"ถ้า a = b แล้ว a + 3 เท่ากับอะไร?",eq:"a = b",o:["b","b + 3","b − 3","3b"],a:1,h3:"ที่ซ้ายเราบวก 3 ไปแล้ว เพื่อให้ตาชั่งสมดุล ฝั่งขวาต้องทำอย่างไร?",s:["a = b คือตาชั่งสมดุล","บวก 3 ทั้งสองข้าง ได้ a + 3 = b + 3","ตาชั่งยังสมดุล ดังนั้น a + 3 = b + 3 ✅"]},
+{q:"2x = 10 ถ้าหารทั้งสองข้างด้วย 2 จะได้อะไร?",eq:"2x = 10",o:["x = 20","x = 5","x = 8","x = 12"],a:1,h3:"2x ÷ 2 = x ส่วน 10 ÷ 2 = ?",s:["เริ่มจาก 2x = 10","หารทั้งสองข้างด้วย 2: 2x ÷ 2 = 10 ÷ 2","ได้ x = 5 ✅"]}]},
+{n:"ตลาดน้ำ: บวกและลบ",i:"🛶",sk:"แก้สมการด้วยการบวกและการลบ",
+t:"เราอยากให้ x อยู่ลำพัง จึงใช้การดำเนินการตรงข้าม เช่น x + 5 = 9 ให้ลบ 5 ทั้งสองข้าง ได้ x = 4 ส่วน x − 2 = 6 ให้บวก 2 ทั้งสองข้าง ได้ x = 8",
+rv:"ทบทวน: +จำนวนไหนก็ลบจำนวนนั้น −จำนวนไหนก็บวกจำนวนนั้น ทั้งสองข้าง",h1:"อยากแยก x ออกจากจำนวนที่บวกหรือลบอยู่ ต้องกำจัดจำนวนไหน",h2:"ใช้การดำเนินการตรงข้ามกับจำนวนนั้น ทำทั้งสองข้าง",
+P:[{q:"นักล่าอาหารมีเงิน x บาท ได้รับเพิ่มอีก 12 บาท รวมเป็น 30 บาท เดิมมีกี่บาท?",eq:"x + 12 = 30",a:18,h3:"ลบ 12 ออกทั้งสองข้าง: x + 12 − 12 = 30 − 12 ฝั่งขวาเหลือเท่าไร?",s:["เป้าหมาย: ให้ x อยู่ลำพัง","ลบ 12 ทั้งสองข้าง (เพราะ +12 หักล้างกับ −12)","x + 12 − 12 = 30 − 12 ได้ x = 18","ตรวจ: 18 + 12 = 30 ✅"]},
+{q:"ซื้อไอศกรีมแล้วจ่ายเงิน 7 บาท เหลือ 15 บาท ถ้าเดิมมี x บาท เดิมมีกี่บาท?",eq:"x − 7 = 15",a:22,h3:"บวก 7 ทั้งสองข้าง: x − 7 + 7 = 15 + 7 ฝั่งขวาเท่ากับเท่าไร?",s:["เป้าหมาย: ให้ x อยู่ลำพัง","บวก 7 ทั้งสองข้าง (เพราะ −7 หักล้างกับ +7)","x − 7 + 7 = 15 + 7 ได้ x = 22","ตรวจ: 22 − 7 = 15 ✅"]}]},
+{n:"ร้านก๋วยเตี๋ยว: คูณและหาร",i:"🍜",sk:"แก้สมการด้วยการคูณและการหาร",
+t:"3x = 45 แปลว่า x ถูกคูณด้วย 3 จึงหารทั้งสองข้างด้วย 3 ได้ x = 15 ส่วน x ÷ 4 = 6 แปลว่า x ถูกหารด้วย 4 จึงคูณทั้งสองข้างด้วย 4 ได้ x = 24",
+rv:"ทบทวน: x ถูกคูณ ให้หาร x ถูกหาร ให้คูณ ทั้งสองข้าง",h1:"ตอนนี้ x ถูกคูณหรือถูกหารอยู่ด้วยจำนวนใด",h2:"ใช้การดำเนินการตรงข้ามกับทั้งสองข้าง",
+P:[{q:"ก๋วยเตี๋ยว 4 ชาม ชามละ x บาท รวม 60 บาท ชามละกี่บาท?",eq:"4x = 60",a:15,h3:"หารทั้งสองข้างด้วย 4: 4x ÷ 4 = 60 ÷ 4 ผลลัพธ์ฝั่งขวาคือเท่าไร?",s:["4x หมายถึง 4 × x","หารทั้งสองข้างด้วย 4","x = 60 ÷ 4 = 15","ตรวจ: 4 × 15 = 60 ✅"]},
+{q:"แบ่งมะม่วง x ผลให้เพื่อน 5 คน ได้คนละ 9 ผล เดิมมีมะม่วงกี่ผล?",eq:"x ÷ 5 = 9",a:45,h3:"x ถูกหารด้วย 5 อยู่ คูณทั้งสองข้างด้วย 5: 9 × 5 = ?",s:["x ÷ 5 = 9","คูณทั้งสองข้างด้วย 5 (หักล้างกับ ÷ 5)","x = 9 × 5 = 45","ตรวจ: 45 ÷ 5 = 9 ✅"]}]},
+{n:"ครัวสองฝั่ง: x ทั้งสองข้าง",i:"🍳",sk:"แก้สมการที่มีตัวแปรทั้งสองข้าง",
+t:"เมื่อมี x ทั้งสองข้าง ให้ย้าย x มารวมข้างเดียวก่อน โดยลบ x ข้างที่น้อยกว่าออกทั้งสองข้าง เช่น 3x = x + 8 ลบ x ทั้งสองข้าง ได้ 2x = 8 แล้วหารด้วย 2 ได้ x = 4",
+rv:"ทบทวน: รวม x ไว้ข้างเดียวก่อน แล้วแก้ต่อด้วยบวก ลบ คูณ หาร",h1:"x อยู่ทั้งสองข้าง ลองรวม x ไว้ข้างเดียวกันก่อน",h2:"ลบ x ที่มีจำนวนน้อยกว่าออกทั้งสองข้าง แล้วจัดการจำนวนที่เหลือทีละขั้น",
+P:[{q:"แผง A: 3 ถุง ถุงละ x บาท รวมค่าส่ง 7 บาท เท่ากับแผง B: 1 ถุง ถุงละ x บาท รวมค่าส่ง 19 บาท ถุงละกี่บาท?",eq:"3x + 7 = x + 19",a:6,h3:"ลบ x ทั้งสองข้างได้ 2x + 7 = 19 ต่อไปลบ 7 ได้ 2x = ? แล้วหารด้วย 2",s:["ลบ x ทั้งสองข้าง ได้ 2x + 7 = 19","ลบ 7 ทั้งสองข้าง ได้ 2x = 12","หารทั้งสองข้างด้วย 2 ได้ x = 6","ตรวจ: 3(6) + 7 = 25 และ 6 + 19 = 25 ✅"]},
+{q:"ถ้า 7x − 6 = 3x + 14 จงหา x",eq:"7x − 6 = 3x + 14",a:5,h3:"ลบ 3x ทั้งสองข้างได้ 4x − 6 = 14 ต่อไปบวก 6 ได้ 4x = ? แล้วหารด้วย 4",s:["ลบ 3x ทั้งสองข้าง ได้ 4x − 6 = 14","บวก 6 ทั้งสองข้าง ได้ 4x = 20","หารทั้งสองข้างด้วย 4 ได้ x = 5","ตรวจ: 7(5) − 6 = 29 และ 3(5) + 14 = 29 ✅"]}]},
+{n:"สมุดสูตรลับ: เขียนสมการ",i:"📝",sk:"สร้างสมการจากข้อความ",
+t:"อ่านโจทย์ แล้วหาว่าอะไรคือสิ่งที่ไม่รู้ให้เป็นตัวแปร จากนั้นเขียนเป็นประโยคคณิตศาสตร์ เช่น ชิ้นละ x บาท 5 ชิ้น รวม 100 บาท เขียนเป็น 5x = 100",
+rv:"ทบทวน: ราคารวม = จำนวน × ราคาต่อหน่วย แล้วบวกหรือลบส่วนอื่นให้ตรงกับเรื่อง",h1:"ถามตัวเองว่า สิ่งที่ไม่รู้คืออะไร และยอดรวมมาจากอะไรบ้าง",h2:"เขียนยอดรวมของทุกอย่างทางซ้าย แล้วให้เท่ากับยอดที่โจทย์บอกทางขวา",
+P:[{q:"ข้าวผัดจานละ x บาท ซื้อ 3 จาน และน้ำ 20 บาท จ่ายรวม 110 บาท เขียนสมการได้ข้อใด?",eq:"3x + 20 = 110",hide:1,o:["3x + 20 = 110","3 + x + 20 = 110","x + 60 = 110","3x − 20 = 110"],a:0,h3:"ข้าวผัด 3 จาน คือ 3x แล้วมีน้ำเพิ่มอีก 20 ต้องบวกหรือลบ?",s:["ข้าวผัด 3 จาน ราคา 3x บาท","บวกน้ำ 20 บาท ได้ 3x + 20","รวมเท่ากับ 110 จึงได้ 3x + 20 = 110","แก้สมการ: ลบ 20 ได้ 3x = 90 แล้วหารด้วย 3 ได้ x = 30 บาท","ตรวจ: 3 × 30 + 20 = 110 ✅"]},
+{q:"ส้มตำ 2 จาน จานละ x บาท กับไก่ย่าง 15 บาท จ่ายรวม 115 บาท เขียนสมการได้ข้อใด?",eq:"2x + 15 = 115",hide:1,o:["2x − 15 = 115","2x + 15 = 115","2x = 115 + 15","x + 15 = 115"],a:1,h3:"ส้มตำ 2 จาน คือ 2x และไก่ย่าง 15 เป็นราคาที่เพิ่มเข้ามา",s:["ส้มตำ 2 จาน ราคา 2x บาท","บวกไก่ย่าง 15 ได้ 2x + 15","รวมเท่ากับ 115 จึงได้ 2x + 15 = 115","แก้สมการ: ลบ 15 ได้ 2x = 100 แล้วหารด้วย 2 ได้ x = 50 บาท","ตรวจ: 2 × 50 + 15 = 115 ✅"]}]},
+{n:"ศึกษาเมนูเด็ด: โจทย์ปัญหา",i:"🏆",sk:"แก้โจทย์ปัญหาและตรวจความสมเหตุสมผลของคำตอบ",
+t:"ขั้นตอนแก้โจทย์: 1) กำหนดตัวแปร 2) เขียนสมการ 3) แก้สมการ 4) ตรวจกลับเข้าโจทย์ และถามว่าคำตอบสมเหตุสมผลไหม เช่น ราคาและจำนวนของไม่ควรติดลบ",
+rv:"ทบทวน: เขียนสมการให้ตรงเรื่อง แก้ทีละขั้น แล้วตรวจคำตอบเสมอ",h1:"เขียนสมการจากเรื่องราวก่อน อะไรคือตัวแปร",h2:"แก้สมการโดยกำจัดตัวเลขที่บวกหรือลบก่อน แล้วค่อยคูณหรือหาร",
+P:[{q:"ไข่ไก่ 6 ฟอง ฟองละ x บาท กับนม 1 กล่อง 25 บาท รวม 85 บาท ไข่ฟองละกี่บาท?",eq:"6x + 25 = 85",a:10,h3:"ลบ 25 ทั้งสองข้างได้ 6x = 60 ต่อไปหารด้วย 6 ได้เท่าไร?",s:["กำหนดให้ไข่ฟองละ x บาท ได้ 6x + 25 = 85","ลบ 25 ทั้งสองข้าง ได้ 6x = 60","หารทั้งสองข้างด้วย 6 ได้ x = 10","ตรวจ: 6 × 10 + 25 = 85 ✅ และราคา 10 บาทเป็นบวก สมเหตุสมผล"]},
+{q:"เชฟมีมะนาว 3 กล่อง กล่องละ x ลูก หยิบไปใช้ 4 ลูก เหลือ 20 ลูก กล่องละกี่ลูก?",eq:"3x − 4 = 20",a:8,h3:"บวก 4 ทั้งสองข้างได้ 3x = 24 ต่อไปหารด้วย 3 ได้เท่าไร?",s:["กำหนดให้กล่องละ x ลูก ได้ 3x − 4 = 20","บวก 4 ทั้งสองข้าง ได้ 3x = 24","หารทั้งสองข้างด้วย 3 ได้ x = 8","ตรวจ: 3 × 8 − 4 = 20 ✅ และจำนวนลูกเป็นจำนวนเต็มบวก สมเหตุสมผล"]}]}
+];
+const PR=["ยอดเยี่ยม!","เก่งมาก!","สุดยอดนักล่า!","ถูกต้องเป๊ะ!"];
+const $=s=>document.querySelector(s),A=$("#app");
+let S={v:"home",lv:0,pi:0,h:0,w:0,sc:0,cb:0,best:0,got:0,un:0,st:[],ok:false,idle:null};
+try{const d=JSON.parse(localStorage.getItem("gmh")||"null");if(d){S.un=d.un||0;S.st=d.st||[];S.sc=d.sc||0}}catch(e){}
+const save=()=>{try{localStorage.setItem("gmh",JSON.stringify({un:S.un,st:S.st,sc:S.sc}))}catch(e){}};
+const cur=()=>L[S.lv].P[S.pi];
+const hdr=()=>`<div class="top"><span class="pill">⭐ ${S.sc} คะแนน</span><span class="pill">🔥 Combo ${S.cb}</span><button class="btn alt" onclick="go('home')">แผนที่ภารกิจ</button></div>`;
+function go(v,lv){clearTimeout(S.idle);S.v=v;if(lv!==undefined){S.lv=lv;S.pi=0;S.got=0;S.cb=0}render()}
+function sides(p){const e=(S.ok||!p.hide)?p.eq:"? = ?";return e.split(" = ")}
+function scale(p){const[l,r]=sides(p),t=S.ok?0:(S.pi%2?-7:7),dy=Math.round(Math.sin(t*Math.PI/180)*110);
+const pan=(id,x,tx,y)=>`<g class="pan" id="${id}" style="transform:translateY(${y}px)"><line x1="${x}" y1="50" x2="${x-42}" y2="104" stroke="currentColor"/><line x1="${x}" y1="50" x2="${x+42}" y2="104" stroke="currentColor"/><rect x="${x-50}" y="104" width="100" height="40" rx="12" fill="var(--gold)"/><text x="${x}" y="130" text-anchor="middle" font-size="17" font-weight="700" fill="#1B2B22" id="${id}t">${tx}</text></g>`;
+return `<svg viewBox="0 0 320 190" role="img" aria-label="ตาชั่งสมการ"><rect x="152" y="50" width="16" height="120" rx="6" fill="var(--leaf)"/><rect x="110" y="168" width="100" height="14" rx="7" fill="var(--leaf)"/><g class="beam" id="beam" style="transform-origin:160px 50px;transform:rotate(${t}deg)"><rect x="50" y="46" width="220" height="8" rx="4" fill="var(--chili)"/></g>${pan("pl",55,l,-dy)}${pan("pr",265,r,dy)}<circle cx="160" cy="50" r="9" fill="var(--chili)"/></svg>`}
+function render(){const f={home,lesson,play,done}[S.v];A.innerHTML=hdr()+f();if(S.v==="play")arm()}
+function home(){return `<div class="hero"><h1>🍜 Gourmet Math Hunter</h1><p>นักล่าคณิตพิชิตโลกอาหาร: ผจญภัยในตลาด แก้สมการเชิงเส้นตัวแปรเดียว โดยมีตาชั่งและโค้ชคอยช่วย</p></div><div class="grid">${L.map((l,i)=>`<button class="lv" ${i>S.un?"disabled":""} onclick="go('lesson',${i})"><span class="ic">${i>S.un?"🔒":l.i}</span><b>ด่าน ${i+1}</b><span>${l.n}</span><span>${"⭐".repeat(S.st[i]||0)||"&nbsp;"}</span></button>`).join("")}</div>`}
+function coach(h){return `<div class="coach"><div class="av" aria-hidden="true">🧑‍🍳</div><div class="bub">${h}</div></div>`}
+function lesson(){const l=L[S.lv];return `<h2 class="disp">ด่าน ${S.lv+1}: ${l.n}</h2>${coach("<b>Coach:</b> "+l.t)}${coach("เรามีโจทย์ "+l.P.length+" ข้อ ลองทำด้วยตัวเองก่อนนะ ติดตรงไหนกดขอคำใบ้ได้ถึง 3 ระดับ ไม่ต้องรีบ!")}<div class="row"><button class="btn" onclick="go('play')">เริ่มภารกิจ</button></div>`}
+function play(){const l=L[S.lv],p=cur();S.ok=false;S.h=0;S.w=0;
+const inp=p.o?`<div class="opts" id="opts">${p.o.map((o,i)=>`<button class="opt" onclick="check(${i})">${String.fromCharCode(65+i)}. ${o}</button>`).join("")}</div>`:`<div class="row"><label for="ans">ตอบ x =</label><input type="text" id="ans" inputmode="decimal" autocomplete="off"><button class="btn" onclick="check($('#ans').value)">ตรวจคำตอบ</button></div>`;
+return `<div class="bar" aria-hidden="true"><i style="width:${S.pi/l.P.length*100}%"></i></div><p>ด่าน ${S.lv+1} · ข้อ ${S.pi+1}/${l.P.length}</p><div class="play"><div class="panel">${scale(p)}${p.hide?"":`<div class="eq" id="eq">${p.eq}</div>`}${p.hide?`<div class="eq" id="eq">ตาชั่งยังไม่สมดุล: เขียนสมการให้ถูก</div>`:""}</div><div class="panel"><div class="q">${p.q}</div>${inp}<div class="row"><button class="btn alt" id="hb" onclick="hint()">💡 คำใบ้ (0/3)</button><button class="btn alt" id="rb" onclick="reveal()">ดูเฉลย</button></div><div id="fb" aria-live="polite"></div></div></div>`}
+function arm(){clearTimeout(S.idle);S.idle=setTimeout(()=>{if(!S.ok)fb('<div class="hint">ใช้เวลาคิดได้เลยนะ ถ้าอยากได้ตัวช่วย กด 💡 คำใบ้ ได้ ไม่เสียกำลังใจแน่นอน</div>',1)},45000);const a=$("#ans");if(a){a.addEventListener("keydown",e=>{if(e.key==="Enter")check(a.value)})}}
+function fb(h,keep){const e=$("#fb");if(!e)return;e.innerHTML=keep?e.innerHTML+h:h}
+const hints=[];
+function hint(){if(S.ok||S.h>=3)return;const l=L[S.lv],p=cur();S.h++;const t=[l.h1,l.h2,p.h3][S.h-1];
+$("#hb").textContent=`💡 คำใบ้ (${S.h}/3)`;if(S.h>=3)$("#hb").disabled=true;
+fb(`<div class="hint"><b>Hint ${S.h}:</b> ${t}</div>`,1);arm()}
+function steps(p){return `<ol class="steps">${p.s.map(x=>`<li>${x}</li>`).join("")}</ol>`}
+function finish(){S.ok=true;clearTimeout(S.idle);const p=cur();
+$("#beam").style.transform="rotate(0deg)";$("#pl").style.transform="translateY(0)";$("#pr").style.transform="translateY(0)";
+const[l,r]=p.eq.split(" = ");$("#pl").querySelector("text").textContent=l;$("#pr").querySelector("text").textContent=r;
+const eq=$("#eq");if(eq)eq.textContent=p.eq;
+document.querySelectorAll(".opt").forEach(b=>b.disabled=true);const a=$("#ans");if(a)a.disabled=true;$("#hb").disabled=true;$("#rb").disabled=true}
+function nextBtn(){const l=L[S.lv];return `<div class="row"><button class="btn" onclick="next()">${S.pi+1<l.P.length?"ข้อต่อไป":"จบด่าน"}</button></div>`}
+function check(v){if(S.ok)return;const p=cur();let ok;
+if(p.o)ok=v===p.a;else{const m=String(v).replace(/,/g,"").match(/-?\d+(\.\d+)?/g);if(!m){fb('<div class="warn">ยังไม่มีตัวเลขนะ พิมพ์ค่าของ x เช่น 12 แล้วกดตรวจคำตอบอีกครั้ง</div>');return}ok=parseFloat(m[m.length-1])===p.a}
+if(ok){const pts=Math.max(30,100-25*S.h);S.cb++;S.best=Math.max(S.best,S.cb);const bonus=S.cb>=2?(S.cb-1)*20:0;S.sc+=pts+bonus;S.got++;
+if(p.o){document.querySelectorAll(".opt")[v].classList.add("ok")}
+finish();$(".pill").textContent="⭐ "+S.sc+" คะแนน";document.querySelectorAll(".pill")[1].textContent="🔥 Combo "+S.cb;
+fb(`<div class="good"><b>${PR[Math.floor(Math.random()*PR.length)]}</b> +${pts} คะแนน${S.h?` (ใช้คำใบ้ ${S.h} ครั้ง)`:" (ไม่ใช้คำใบ้)"} ${bonus?`<span class="combo">Combo x${S.cb}! โบนัส +${bonus}</span>`:""}<br>ถูกเพราะเมื่อทำตามเหตุผลด้านล่าง ตาชั่งจึงสมดุลพอดี:${steps(p)}</div>`+nextBtn())}
+else{S.w++;S.cb=0;document.querySelectorAll(".pill")[1].textContent="🔥 Combo 0";if(p.o){const b=document.querySelectorAll(".opt")[v];b.classList.add("no");b.disabled=true}
+fb(`<div class="warn"><b>ยังไม่ใช่ ไม่เป็นไรนะ!</b> ทุกคนพลาดได้ ลองใหม่อีกครั้ง<br>${L[S.lv].rv}${S.w>=2&&S.h<3?"<br>ลองกด 💡 คำใบ้ ดูได้เลย":""}</div>`);arm()}}
+function reveal(){if(S.ok)return;const p=cur();S.cb=0;S.got=Math.max(0,S.got);finish();document.querySelectorAll(".pill")[1].textContent="🔥 Combo 0";
+fb(`<div class="hint"><b>เฉลยละเอียด</b> (ข้อนี้ไม่ได้คะแนน ลองทำข้อต่อไปให้เต็มที่นะ)${steps(p)}</div>`+nextBtn())}
+function next(){const l=L[S.lv];if(S.pi+1<l.P.length){S.pi++;render()}else{S.st[S.lv]=Math.max(S.st[S.lv]||0,S.got);S.un=Math.max(S.un,Math.min(S.lv+1,L.length-1));save();go("done")}}
+function done(){const l=L[S.lv],last=S.lv===L.length-1;return `<div class="hero"><h2 class="disp">ผ่านด่าน ${S.lv+1} แล้ว! 🎉</h2><p>${l.n}</p></div>${coach(`<b>ทักษะที่เธอทำได้:</b> ${l.sk}<br>ตอบถูกด้วยตัวเอง ${S.got}/${l.P.length} ข้อ ${"⭐".repeat(S.got)}<br>คอมโบสูงสุดรอบนี้: ${S.best}`)}${coach(last?"เธอจบครบทุกด่านแล้ว! ตอนนี้แก้สมการเชิงเส้นตัวแปรเดียวและตรวจคำตอบได้เอง ปลดล็อกภารกิจพิเศษ: <b>ตำนานนักล่าคณิต</b> 🏅":`ปลดล็อกภารกิจใหม่แล้ว: <b>ด่าน ${S.lv+2} ${L[S.lv+1].i} ${L[S.lv+1].n}</b>`)}<div class="row">${last?"":`<button class="btn" onclick="go('lesson',${S.lv+1})">ไปด่านต่อไป</button>`}<button class="btn alt" onclick="go('lesson',${S.lv})">เล่นด่านนี้ซ้ำ</button><button class="btn alt" onclick="go('home')">แผนที่ภารกิจ</button></div>`}
+render();
+</script>
+</body>
+</html>
